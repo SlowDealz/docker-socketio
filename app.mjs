@@ -18,16 +18,25 @@ io.on('connection', (socket) => {
   });
 
   // Client
-  // socket.on('broadcast', (payload) => {
-  //   console.log('socket', 'broadcast', payload)
+  // socket = io(WEBSOCKET_SERVER_URL);
+  // socket.on('connect', () => {
+  //   socket.emit('join', 'monitor');
+  // })
+
+  // socket.on('monitor:nvidia:changed', (payload) => {
+  //   console.log('monitor:nvidia:changed', payload)
   // });
 
-  // const payload = {foo: 'bar'}
+  // const payload = { previous: {...}, current: {...}}
   // setTimeout(() => {
-  //   socketTwo.emit('broadcast', 'monitor', payload);
+  //   socketTwo.emit('monitor:nvidia:changed', payload);
   // }, 1000)
-  socket.on('broadcast', (room, payload) => {
-    socket.to(room).emit('broadcast', payload);
+  socket.onAny((rawEvent, payload) => {
+
+    const [room, ...roomEventNamespace] = rawEvent.split(':')
+    if (roomEventNamespace.length === 0 || !socket.rooms.has(room)) return
+
+    socket.to(room).emit(rawEvent, payload);
   });
 });
 
