@@ -1,18 +1,15 @@
-FROM zzrot/alpine-node
-MAINTAINER Vo Duy Tuan <tuanmaster2012@gmail.com>
-
-RUN apk add --update \
-    supervisor \
-  && rm -rf /var/cache/apk/*
+FROM node:17-alpine
 
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-RUN /bin/mkdir -p /srv/logs
+COPY install.sh \
+     app.mjs \
+     /srv
 
 WORKDIR /srv
 
-RUN npm install --silent socket.io
-RUN npm dedupe
+RUN chmod +x /srv/install.sh && \
+    /bin/sh /srv/install.sh
 
 EXPOSE 8080
 

@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  socketio:
+    build:
+      context: .
+    container_name: socketio
+    ports:
+      - "8080:8080"
